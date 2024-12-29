@@ -5,8 +5,8 @@ go web/job/rpc framework
 - rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入)
 
 # 为什么我要开源这个项目
-从2017年开始写go，到现在已经有7个年头了，我深刻体会到要把go语言（这里暂时不讨论go runtime底层的方方面面等），在实际项目中快速用起来还是有一定的难度的，因此这7年来我一直在探索、验证、总结经验。
-我开源这个项目实战的目的是：让go开发者能够在短时间内快速上手web/rpc/job等实战开发，仅此而已。
+从2017年开始写go，到现在已经有7个年头了，我深刻体会到要把go语言（这里暂时不讨论go runtime底层和go plan9的方方面面等）在实际项目中快速用起来还是有一定的难度的。因此，这7年来我一直在探索、验证、总结经验。
+我开源这个项目的目的是：让go开发者或者想转go语言的开发者能够在短时间内快速上手web/rpc/job等实战开发（少走一些弯路，让开发更加顺畅），仅此而已。
 
 # 支持的特性
 目录该项目支持config配置读取、validator参数校验（web和grpc都支持）、logger日志记录、metrics/prometheus接入（服务监控）、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
