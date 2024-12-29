@@ -1,0 +1,41 @@
+app_conf:
+  app_debug: true # 是否开启调试模式
+  app_env: prod # prod,test,local,dev
+  http_port: 1337
+  monitor_port: 2337 # pprof性能监控和prometheus监控端口，这是通过http服务访问
+  grpc_port: 8081
+  grpc_gateway_port: 8091
+  graceful_wait: 5s # 平滑退出等待时间，单位s
+
+# redis配置
+redis_conf:
+  Address: 127.0.0.1:6379 # host:port address.
+  Password:
+  DB: 0
+  DialTimeout: 5s # Dial timeout for establishing new connections.
+  ReadTimeout: 3s # read timeout
+  WriteTimeout: 3s # write timeout
+  PoolSize: 10 # pool size
+  PoolTimeout: 4s # pool timeout
+  MinIdleConns: 3 # 最小空闲数
+  ConnMaxIdleTime: 1200s # #最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭
+  ConnMaxLifetime: 1800s # 连接最大生命周期，存活时间，超过这个时间就会重新建立连接
+
+# mysql配置
+db_conf:
+  Host: 127.0.0.1
+  Port: 3306
+  User: root
+  Password: "root123456"
+  Database: test
+  Charset: "utf8mb4"
+  Collation: "utf8mb4_general_ci"
+  MaxIdleConns: 60 # 空闲pool个数
+  MaxOpenConns: 600 # 最大open connection个数
+  MaxLifetime: 1800s # 数据库超时时间，单位s
+  Timeout: 10s #  Dial timeout
+  ReadTimeout: 10s # I/O read timeout
+  WriteTimeout: 10s # I/O write timeout
+  ParseTime: true # 是否格式化时间类型，默认true
+  ShowSql: true # 是否输出sql语句
+  UsePool: true # 是否采用连接池，默认true
