@@ -9,7 +9,8 @@ go web/job/rpc framework
 我开源这个项目实战的目的是：让go开发者能够在短时间内快速上手web/rpc/job等实战开发，仅此而已。
 
 # 支持的特性
-目录该项目支持validator、logger、metrics/prometheus接入、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
+目录该项目支持config配置读取、validator参数校验（web和grpc都支持）、logger日志记录、metrics/prometheus接入（服务监控）、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
+至于trace功能，后续再持续加入。
 
 # grpc相关工具
     见bin目录中的shell脚本
