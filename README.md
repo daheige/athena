@@ -21,6 +21,9 @@ go run main.go
 ```shell
 cd cmd/rpc
 go run main.go
+
+# 运行客户端
+go clients/go/client.go
 ```
 
 运行job
