@@ -2,7 +2,7 @@
 go web/job/rpc framework
 - web 使用gin http框架
 - job 使用corba框架
-- rpc 使用grpc框架(通过gmicro框架定制化开发，支持validator、prometheus接入)
+- rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入)
 
 # 为什么我要开源这个项目
 从2017年开始写go，到现在已经有7个年头了，我深刻体会到要把go语言（这里暂时不讨论go runtime底层的方方面面等），在实际项目中快速用起来还是有一定的难度的，因此这7年来我一直在探索、验证、总结经验。
