@@ -33,13 +33,14 @@ cp ../../app.yaml ./
 
 # monitor服务监控
 web服务监控
-http://localhost:2337/metrics
-http://localhost:2337/debug/pprof
+- http://localhost:2337/metrics
+- http://localhost:2337/debug/pprof
 
 rpc服务监控
-http://localhost:3337/metrics
-http://localhost:3337/debug/pprof
-监控的服务端口号，可自行更改配置文件
+- http://localhost:3337/metrics
+- http://localhost:3337/debug/pprof
+
+以上监控的服务端口号，可自行更改配置文件
 
 # dockerfile
 todo
