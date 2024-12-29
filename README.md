@@ -2,7 +2,14 @@
 go web/job/rpc framework
 - web 使用gin http框架
 - job 使用corba框架
-- rpc 使用grpc框架
+- rpc 使用grpc框架(通过gmicro框架定制化开发，支持validator、prometheus接入)
+
+# 为什么我要开源这个项目
+从2017年开始写go，到现在已经有7个年头了，我深刻体会到要把go语言（这里暂时不讨论go runtime底层的方方面面等），在实际项目中快速用起来还是有一定的难度的，因此这7年来我一直在探索、验证、总结经验。
+我开源这个项目实战的目的是：让go开发者能够在短时间内快速上手web/rpc/job等实战开发，仅此而已。
+
+# 支持的特性
+目录该项目支持validator、logger、metrics/prometheus接入、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
 
 # grpc相关工具
     见bin目录中的shell脚本
@@ -46,4 +53,4 @@ rpc服务监控
 以上监控的服务端口号，可自行更改配置文件
 
 # dockerfile
-根据不同的业务场景进行构建，参考bin目录中的docker开头的shell脚本，或者执行Makefile中的命令
+根据不同的业务场景进行构建，参考bin目录中的docker开头的shell脚本，或者执行Makefile中的命令。
