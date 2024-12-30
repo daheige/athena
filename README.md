@@ -9,15 +9,15 @@ go web/job/rpc framework
 我开源这个项目的目的是：让go开发者或者想转go语言的开发者能够在短时间内快速上手web/rpc/job等实战开发（少走一些弯路，让开发更加顺畅），仅此而已。
 
 # 支持的特性
-目录该项目支持config配置读取、validator参数校验（web和grpc都支持）、logger日志记录、metrics/prometheus接入（服务监控）、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
+目前该项目支持config配置读取、validator参数校验（web和grpc都支持）、logger日志记录、metrics/prometheus接入（服务监控）、grpc微服务和gateway http服务，以及MySQL和redis初始化和数据读写等操作。
 至于trace功能，后续再持续加入。
 
 # grpc相关工具
     见bin目录中的shell脚本
 
 # 开始运行
-1. 配置好app.yaml文件
-2. 执行如下命名启动web,job,rpc
+1. 配置好app.yaml文件，可以根据实际情况更改。
+2. 执行如下命令分别启动web,job,rpc服务。
 
 运行web
 ```shell
