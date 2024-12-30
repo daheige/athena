@@ -1,7 +1,7 @@
 # athena
 go web/job/rpc framework
 - web 使用gin http框架
-- job 使用corba框架
+- job 使用cobra框架
 - rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入)
 
 # 为什么我要开源这个项目
