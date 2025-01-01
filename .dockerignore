@@ -31,3 +31,6 @@ docs/*
 bin/docker-dev.sh
 bin/docker-rpc-run.sh
 bin/docker-rpc-build.sh
+tools/validator_gen/*
+proto/*
+bin/*.sh

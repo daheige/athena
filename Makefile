@@ -6,7 +6,15 @@ RPC_SERVICE := athena-rpc
 
 WEB_IMAGE_NAME := athena-project-web
 WEB_SERVICE := athena-web
-
+go-gen:
+	# 生成go grpc相关代码
+	sh bin/go-generate.sh
+nodejs-gen:
+	# 生成nodejs client grpc相关代码
+	sh bin/nodejs-generate.sh
+php-gen:
+	# 生成php client grpc相关代码
+	sh bin/nodejs-generate.sh
 dev-build:
 	docker build . -f Dockerfile-dev -t ${DEV_IMAGE_NAME}:${VERSION}
 rpc-build:

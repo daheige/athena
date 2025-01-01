@@ -2,8 +2,7 @@ FROM athena-project-dev:v1.0 as builder
 
 LABEL authors="heige"
 
-# 设置环境变量LANG
-ENV LANG C.UTF-8
+# 设置环境变量
 ENV CGO_ENABLED=0 GOPROXY=https://goproxy.cn,direct
 
 WORKDIR /app
@@ -18,6 +17,9 @@ RUN cd /app/cmd/rpc && go build -ldflags="-s -w" -o athena-rpc
 # 将上面构建好的二进制文件复制到容器中运行
 FROM debian:bullseye-slim
 
+# 设置时区
+ENV TZ=Asia/Shanghai LANG="zh_CN.UTF-8"
+
 WORKDIR /app
 
 # 设置gRPC微服务和metrics服务运行端口
@@ -31,7 +33,7 @@ EXPOSE 8091
 RUN echo "deb http://mirrors.aliyun.com/debian bullseye main" > /etc/apt/sources.list &&  \
     echo "deb http://mirrors.aliyun.com/debian-security bullseye-security main" >> /etc/apt/sources.list &&  \
     echo "deb http://mirrors.aliyun.com/debian bullseye-updates main" >> /etc/apt/sources.list &&  \
-    apt-get update && apt-get install -y ca-certificates vim bash curl net-tools \
+    apt-get update && apt-get install -y ca-certificates vim bash curl net-tools wget \
     apt-transport-https && update-ca-certificates && apt-get clean &&  \
     rm -rf /var/lib/apt/lists/* && mkdir -p /app/config
 
