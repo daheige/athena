@@ -33,7 +33,7 @@ func main() {
 	// 初始化prometheus和pprof，可以根据实际情况更改
 	// monitor.InitMonitor(conf.MonitorPort)
 	// 访问地址：http://localhost:9091/metrics
-	monitor.InitMonitor(conf.GrpcGatewayPort + 1000)
+	monitor.InitMonitor(conf.GrpcGatewayPort+1000, true)
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
