@@ -43,6 +43,7 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
+	// 这个grpc微服务地址，一般来说是一个远程的ip:port，可以根据实际情况更改
 	// gRPCAddress := fmt.Sprintf("0.0.0.0:%d",conf.GrpcPort)
 	gRPCAddress := fmt.Sprintf("0.0.0.0:%d", conf.GrpcPort)
 	err := pb.RegisterGreeterServiceHandlerFromEndpoint(ctx, mux, gRPCAddress, opts)
