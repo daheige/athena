@@ -16,6 +16,9 @@ go web/job/rpc framework
 # grpc相关工具
     见bin目录中的shell脚本
 
+# linux环境安装protoc工具
+https://github.com/daheige/rs-rpc?tab=readme-ov-file#centos7-install-protoc
+
 # 开始运行
 1. 配置好app.yaml文件，可以根据实际情况更改。
 2. 执行如下命令分别启动web,job,rpc服务。
