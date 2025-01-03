@@ -56,3 +56,6 @@ rpc服务监控
 
 # dockerfile
 根据不同的业务场景进行构建，参考bin目录中的docker开头的shell脚本，或者执行Makefile中的命令。
+
+# rust语言的grpc微服务解决方案
+https://github.com/daheige/rs-rpc
