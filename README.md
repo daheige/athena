@@ -2,7 +2,7 @@
 go web/job/rpc framework
 - web 使用gin http框架
 - job 使用cobra框架
-- rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入)
+- rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入，同时支持go、rust、php、nodejs等语言的客户端代码生成，以及gateway http proxy接入)
 - gateway 用于grpc微服务gateway http proxy请求转发（这个需要提前启动好grpc微服务，然后再运行该gateway服务）
 
 # 为什么我要开源这个项目
