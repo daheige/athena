@@ -53,7 +53,7 @@ func main() {
 		})
 	}
 
-	router := gin.Default()
+	router := gin.New()
 	initRouter(router, mux)
 
 	// 服务server设置
@@ -132,10 +132,10 @@ func initRouter(router *gin.Engine, mux *runtime.ServeMux) {
 
 	// gateway http proxy
 	// 这里将proto文件中的路由地址进行路由注册
-	// 访问方式：http://localhost:8081/v1/say/1
+	// 访问方式：http://localhost:8091/v1/say/1
 	router.Any("/v1/*any", gin.WrapH(mux))
 
-	// 自定义路由地址
+	// 添加自定义路由地址
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",

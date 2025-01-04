@@ -2,7 +2,7 @@ FROM golang:1.22.10-bullseye
 LABEL authors="heige"
 
 # 设置环境变量
-ENV LANG C.UTF-8
+ENV LANG="zh_CN.UTF-8"
 
 # 设置nodejs版本
 ENV NODEJS_VERSION=20

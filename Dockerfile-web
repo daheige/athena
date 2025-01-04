@@ -11,13 +11,13 @@ COPY . .
 
 RUN go mod download && go mod verify
 
-# 编译构建rust应用程序
+# 编译构建应用程序
 RUN cd /app/cmd/web && go build -ldflags="-s -w" -o athena-web
 
 # 将上面构建好的二进制文件复制到容器中运行
 FROM debian:bullseye-slim
 
-# 设置时区
+# 设置时区和lang
 ENV TZ=Asia/Shanghai LANG="zh_CN.UTF-8"
 
 WORKDIR /app
