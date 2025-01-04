@@ -1,7 +1,7 @@
 # athena
 go web/job/rpc framework
-- web 使用gin http框架
-- job 使用cobra框架
+- web 使用gin http框架，参考文档：https://github.com/gin-gonic/gin
+- job 使用cobra框架，参考文档：https://cobra.dev/
 - rpc 使用grpc框架(通过gmicro框架: https://github.com/daheige/gmicro 定制化开发，支持validator、prometheus接入，同时支持go、rust、php、nodejs等语言的客户端代码生成)
 - gateway 用于grpc微服务gateway http proxy请求转发（这个需要提前启动好grpc微服务，然后再运行该gateway http proxy服务）
 
@@ -16,7 +16,7 @@ go web/job/rpc framework
 # grpc相关工具
     见bin目录中的shell脚本
 
-# linux环境安装protoc工具
+# linux centos环境安装protoc工具
 https://github.com/daheige/rs-rpc?tab=readme-ov-file#centos7-install-protoc
 
 # 开始运行
