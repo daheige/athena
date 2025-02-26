@@ -60,5 +60,30 @@ rpc服务监控
 # dockerfile
 根据不同的业务场景进行构建，参考bin目录中的docker开头的shell脚本，或者执行Makefile中的命令。
 
+# 本地运行etcd
+```shell
+docker run -d \
+  --name etcd_test \
+  --restart=always \
+  -p 12379:2379 \
+  -p 12380:2380 \
+  quay.io/coreos/etcd:v3.5.1 \
+  /usr/local/bin/etcd \
+  --name etcd_test \
+  --data-dir /etcd-data \
+  --advertise-client-urls http://localhost:2379 \
+  --listen-client-urls http://0.0.0.0:2379
+```
+当etcd运行后，就可以修改app.yaml配置文件的服务发现和注册如下：
+```yaml
+  # 服务注册和发现配置
+  enable_discovery: true # 是否开启服务发现和注册，本地开发时可以设置为false
+  discovery:
+    target_type: etcd
+    endpoints:
+      - "127.0.0.1:12379"
+```
+随后就可以运行rpc应用程序
+
 # rust语言的grpc微服务解决方案
 https://github.com/daheige/rs-rpc
