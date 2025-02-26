@@ -118,7 +118,7 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 		return err
 	}
 
-	log.Printf("register serviceName:%v leaseID:%v instaceID:%v\n", s.Name, leaseID, s.InstanceID)
+	// log.Printf("register serviceName:%v leaseID:%v instaceID:%v\n", s.Name, leaseID, s.InstanceID)
 	_, err = e.client.Put(ctx, key, string(b), clientv3.WithLease(leaseID))
 	if err != nil {
 		return err
