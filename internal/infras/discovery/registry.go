@@ -3,6 +3,7 @@ package discovery
 
 import (
 	"errors"
+	"math/rand"
 	"time"
 )
 
@@ -41,4 +42,14 @@ type Service struct {
 	// 服务的其他元信息
 	// Metadata map[string]string{} `json:"metadata"`
 	Metadata map[string]interface{} `json:"metadata"`
+}
+
+// RoundRobinService 随机挑选一个服务
+func RoundRobinService(services []*Service) *Service {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	// 生成一个随机索引
+	randomIndex := r.Intn(len(services))
+	// 通过随机索引获取元素
+	service := services[randomIndex]
+	return service
 }

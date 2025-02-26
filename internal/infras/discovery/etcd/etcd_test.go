@@ -45,7 +45,7 @@ func TestEtcdServices(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	services, err := r.GetServices("test_etcd_service")
+	services, err := r.GetServices("athena_grpc")
 	if err != nil {
 		log.Fatal("failed to get services,error: ", err)
 	}
@@ -55,5 +55,5 @@ func TestEtcdServices(t *testing.T) {
 	}
 
 	// 剔除某个服务，一般来说，在应用程序退出之前，需要将其剔除该服务
-	// r.Deregister("test_etcd_service", "c199fc34-05cf-4f27-bd63-bbcc2b6b9433")
+	//r.Deregister("test_etcd_service", "c199fc34-05cf-4f27-bd63-bbcc2b6b9433")
 }

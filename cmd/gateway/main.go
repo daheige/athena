@@ -17,6 +17,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/daheige/athena/internal/infras/config"
+	"github.com/daheige/athena/internal/infras/discovery"
+	"github.com/daheige/athena/internal/infras/discovery/etcd"
 	"github.com/daheige/athena/internal/infras/logger"
 	"github.com/daheige/athena/internal/infras/monitor"
 	"github.com/daheige/athena/internal/interfaces/api/middleware"
@@ -46,6 +48,26 @@ func main() {
 	// 这个grpc微服务地址，一般来说是一个远程的ip:port，可以根据实际情况更改
 	// gRPCAddress := fmt.Sprintf("0.0.0.0:%d",conf.GrpcPort)
 	gRPCAddress := fmt.Sprintf("0.0.0.0:%d", conf.GrpcPort)
+	if conf.EnableDiscovery {
+		log.Println("conf.Discovery.TargetType: ", conf.Discovery.TargetType)
+		r, err := etcd.New(conf.Discovery.Endpoints)
+		if err != nil {
+			log.Fatal("init service registry error: ", err)
+		}
+
+		serviceName := "athena_grpc"
+		services, err := r.GetServices(serviceName)
+		if err != nil {
+			log.Fatal("get services error: ", err)
+		}
+		if len(services) == 0 {
+			log.Fatal("no service found")
+		}
+
+		service := discovery.RoundRobinService(services)
+		gRPCAddress = service.Address
+	}
+
 	err := pb.RegisterGreeterServiceHandlerFromEndpoint(ctx, mux, gRPCAddress, opts)
 	if err != nil {
 		logger.Fatal(ctx, "failed to register grpc endpoint", map[string]interface{}{

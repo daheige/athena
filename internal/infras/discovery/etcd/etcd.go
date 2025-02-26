@@ -99,7 +99,7 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 		s.InstanceID = uuid.New().String()
 	}
 
-	var ttlTime int64 = 30
+	var ttlTime int64 = 10
 	if len(ttl) > 0 && ttl[0] > 0 {
 		ttlTime = int64(ttl[0].Seconds())
 	}

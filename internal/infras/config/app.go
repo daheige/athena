@@ -20,14 +20,16 @@ type AppConfig struct {
 	GrpcPort        uint16        `mapstructure:"grpc_port"`         // grpc 服务端口
 	GrpcGatewayPort uint16        `mapstructure:"grpc_gateway_port"` // grpc http gateway 服务端口
 	GracefulWait    time.Duration `mapstructure:"graceful_wait"`     // 平滑退出等待时间
-
-	// 数据库配置
-	DbConf DbConf `mapstructure:"db_conf"`
-
-	// redis配置
-	RedisConf RedisConf `mapstructure:"redis_conf"`
+	EnableDiscovery bool          `mapstructure:"enable_discovery"`  // 是否需要服务发现和注册
 
 	// 其他情况根据实际情况添加
+	Discovery Discovery `mapstructure:"discovery"`
+}
+
+// Discovery 服务注册和发现配置
+type Discovery struct {
+	TargetType string   `mapstructure:"target_type"`
+	Endpoints  []string `mapstructure:"endpoints"`
 }
 
 // 配置文件读取的接口

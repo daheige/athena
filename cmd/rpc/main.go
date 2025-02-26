@@ -8,10 +8,13 @@ import (
 	"time"
 
 	"github.com/daheige/gmicro/v2"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 
 	"github.com/daheige/athena/internal/application"
 	"github.com/daheige/athena/internal/infras/config"
+	"github.com/daheige/athena/internal/infras/discovery"
+	"github.com/daheige/athena/internal/infras/discovery/etcd"
 	"github.com/daheige/athena/internal/infras/logger"
 	"github.com/daheige/athena/internal/infras/monitor"
 	"github.com/daheige/athena/internal/interfaces/rpc"
@@ -57,6 +60,32 @@ func main() {
 			b, _ := json.Marshal(m)
 			_, _ = w.Write(b)
 		},
+	}
+
+	// 服务注册
+	if conf.EnableDiscovery {
+		log.Println("conf.Discovery.TargetType: ", conf.Discovery.TargetType)
+		r, err := etcd.New(conf.Discovery.Endpoints)
+		if err != nil {
+			log.Fatal("init service registry error: ", err)
+		}
+		serviceName := "athena_grpc"
+		instanceID := uuid.New().String()
+		err = r.Register(discovery.Service{
+			Name:       serviceName,
+			Version:    "v1",
+			InstanceID: instanceID,
+			Address:    fmt.Sprintf("localhost:%d", conf.GrpcPort),
+		})
+		if err != nil {
+			log.Fatal("register service error:", err)
+		}
+
+		shutdownFunc = func() {
+			if e := r.Deregister(serviceName, instanceID); e != nil {
+				log.Println("deregister service error:", e)
+			}
+		}
 	}
 
 	opts := []gmicro.Option{
