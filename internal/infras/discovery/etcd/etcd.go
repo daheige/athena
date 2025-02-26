@@ -108,17 +108,14 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	if err != nil {
 		return err
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-	defer cancel()
-
 	key := fmt.Sprintf("%s/%s/%s", e.prefix, s.Name, s.InstanceID)
 	b, err := json.Marshal(s)
 	if err != nil {
 		return err
 	}
 
-	// log.Printf("register serviceName:%v leaseID:%v instaceID:%v\n", s.Name, leaseID, s.InstanceID)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer cancel()
 	_, err = e.client.Put(ctx, key, string(b), clientv3.WithLease(leaseID))
 	if err != nil {
 		return err
@@ -134,8 +131,7 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	}
 
 	e.meta = meta
-
-	log.Printf("register serviceName:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
+	log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
 	return nil
 }
 
@@ -147,11 +143,11 @@ func (e *etcdImpl) keepalive(meta *registerMeta) error {
 
 	go func() {
 		// eat keepAlive channel to keep related lease alive.
-		log.Printf("start keepalive lease %x for etcd registry\n", meta.leaseID)
+		log.Printf("start keepalive lease %v for etcd registry\n", meta.leaseID)
 		for range keepAlive {
 			select {
 			case <-meta.ctx.Done():
-				log.Printf("stop keepalive lease %x for etcd registry\n", meta.leaseID)
+				log.Printf("stop keepalive lease %v for etcd registry\n", meta.leaseID)
 				return
 			default:
 			}
@@ -175,20 +171,17 @@ func (e *etcdImpl) grantLease(ttl int64) (clientv3.LeaseID, error) {
 
 // Deregister 移除服务
 func (e *etcdImpl) Deregister(name string, instanceID string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
 	key := fmt.Sprintf("%s/%s/%s", e.prefix, name, instanceID)
-	log.Printf("deregister serviceName:%v instaceID:%v key:%s\n", name, instanceID, key)
-	_, err := e.client.Delete(ctx, key)
+	_, err := e.client.Delete(context.Background(), key)
 	if err != nil {
 		return err
 	}
 
+	log.Printf("deregister service:%v instaceID:%v success\n", name, instanceID)
 	if e.meta != nil {
 		e.meta.cancel()
 	}
 
-	log.Printf("deregister serviceName:%v instaceID:%v success\n", name, instanceID)
 	return nil
 }
 

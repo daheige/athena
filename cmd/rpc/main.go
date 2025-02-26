@@ -23,10 +23,7 @@ import (
 	"github.com/daheige/athena/internal/providers"
 )
 
-var (
-	shutdownFunc func()
-	conf         *config.AppConfig
-)
+var conf *config.AppConfig
 
 func init() {
 	// 读取配置文件，并初始化redis和mysql
@@ -34,11 +31,6 @@ func init() {
 
 	// 初始化日志配置
 	logger.Default(logger.WithLogFilename("athena-rpc.log"), logger.WithStdout(conf.AppDebug))
-
-	// 服务退出前的处理函数
-	shutdownFunc = func() {
-		fmt.Println("Server shutting down")
-	}
 
 	// 初始化prometheus和pprof，可以根据实际情况更改
 	// monitor.InitMonitor(conf.MonitorPort)
@@ -62,6 +54,19 @@ func main() {
 		},
 	}
 
+	opts := []gmicro.Option{
+		gmicro.WithRouteOpt(health),
+		gmicro.WithPreShutdownDelay(3 * time.Second),
+		gmicro.WithShutdownTimeout(5 * time.Second),
+		gmicro.WithHandlerFromEndpoint(pb.RegisterGreeterServiceHandlerFromEndpoint),
+		gmicro.WithRequestAccess(true),
+		gmicro.WithPrometheus(true),
+		gmicro.WithGRPCServerOption(grpc.ConnectionTimeout(10 * time.Second)),
+		gmicro.WithGRPCNetwork("tcp"), // grpc server start network
+		// 自定义拦截器
+		gmicro.WithUnaryInterceptor(interceptor.AccessLog),
+	}
+
 	// 服务注册
 	if conf.EnableDiscovery {
 		log.Println("conf.Discovery.TargetType: ", conf.Discovery.TargetType)
@@ -81,25 +86,13 @@ func main() {
 			log.Fatal("register service error:", err)
 		}
 
-		shutdownFunc = func() {
+		shutdownFunc := func() {
+			log.Println("discovery service shutdown")
 			if e := r.Deregister(serviceName, instanceID); e != nil {
 				log.Println("deregister service error:", e)
 			}
 		}
-	}
-
-	opts := []gmicro.Option{
-		gmicro.WithRouteOpt(health),
-		gmicro.WithShutdownFunc(shutdownFunc),
-		gmicro.WithShutdownTimeout(5 * time.Second),
-		gmicro.WithHandlerFromEndpoint(pb.RegisterGreeterServiceHandlerFromEndpoint),
-		gmicro.WithRequestAccess(true),
-		gmicro.WithPrometheus(true),
-		gmicro.WithGRPCServerOption(grpc.ConnectionTimeout(10 * time.Second)),
-		gmicro.WithGRPCNetwork("tcp"), // grpc server start network
-
-		// 自定义拦截器
-		gmicro.WithUnaryInterceptor(interceptor.AccessLog),
+		opts = append(opts, gmicro.WithShutdownFunc(shutdownFunc))
 	}
 
 	if conf.AppDebug { // 调试模式输出日志到终端中
