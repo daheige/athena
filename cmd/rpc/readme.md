@@ -34,6 +34,6 @@ app_conf:
       - "192.168.10.121:2379" # 地址可以根据实际情况自行更改
 ```
 接着运行 go run client.go 效果如下
-![img.png](go-client.png)
+![go-client](go-client.png)
 多次请求后，发现请求的address会发生改变，效果如下
-![img.png](go-client2.png)
+![go-client2](go-client2.png)
