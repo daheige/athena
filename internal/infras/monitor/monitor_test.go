@@ -41,7 +41,7 @@ func TestMonitorHandler(t *testing.T) {
 	port := 1339
 	// 添加prometheus metrics处理器
 	httpMux.Handle("/metrics", promhttp.Handler())
-	gpprof.Run(httpMux, port+1000)
+	gpprof.Run(httpMux, uint16(port+1000))
 
 	router := http.NewServeMux()
 	router.HandleFunc("/test", MonitorHandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
