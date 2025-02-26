@@ -33,12 +33,12 @@ type Service struct {
 	Address string `json:"address"`
 
 	// 服务的唯一标识，例如uuid字符串
-	InstanceID string `json:"id"`
+	InstanceID string `json:"instance_id"`
 
 	// 当前版本
 	Version string `json:"version"`
 
 	// 服务的其他元信息
-	//Metadata map[string]string{} `json:"metadata"`
+	// Metadata map[string]string{} `json:"metadata"`
 	Metadata map[string]interface{} `json:"metadata"`
 }
