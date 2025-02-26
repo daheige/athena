@@ -1,6 +1,6 @@
 app_conf:
   # 服务注册和发现配置
-  enable_discovery: false
+  enable_discovery: true
   discovery:
     target_type: etcd
     endpoints:

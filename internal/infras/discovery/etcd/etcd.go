@@ -98,6 +98,9 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	if s.InstanceID == "" {
 		s.InstanceID = uuid.New().String()
 	}
+	if s.Created == "" {
+		s.Created = time.Now().Format("2006-01-02 15:04:05")
+	}
 
 	var ttlTime int64 = 10
 	if len(ttl) > 0 && ttl[0] > 0 {

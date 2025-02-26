@@ -1,0 +1,13 @@
+app_conf:
+  app_debug: true # 是否开启调试模式
+  app_env: prod # prod,test,local,dev
+  grpc_port: 8082
+  grpc_gateway_port: 8091
+  graceful_wait: 5s # 平滑退出等待时间，单位s
+
+  # 服务注册和发现配置
+  enable_discovery: true
+  discovery:
+    target_type: etcd
+    endpoints:
+      - "192.168.10.121:2379"

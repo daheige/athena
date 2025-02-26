@@ -45,7 +45,7 @@ func TestEtcdServices(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	services, err := r.GetServices("athena_grpc")
+	services, err := r.GetServices("test_etcd_service")
 	if err != nil {
 		log.Fatal("failed to get services,error: ", err)
 	}

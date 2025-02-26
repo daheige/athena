@@ -39,6 +39,9 @@ type Service struct {
 	// 当前版本
 	Version string `json:"version"`
 
+	// 创建时间
+	Created string `json:"created"`
+
 	// 服务的其他元信息
 	// Metadata map[string]string{} `json:"metadata"`
 	Metadata map[string]interface{} `json:"metadata"`

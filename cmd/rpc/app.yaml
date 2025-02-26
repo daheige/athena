@@ -2,8 +2,8 @@ app_conf:
   app_debug: true # 是否开启调试模式
   app_env: prod # prod,test,local,dev
   http_port: 1337
-  monitor_port: 2337 # pprof性能监控和prometheus监控端口，这是通过http服务访问
-  grpc_port: 8081
+  monitor_port: 2338 # pprof性能监控和prometheus监控端口，这是通过http服务访问
+  grpc_port: 8082
   grpc_gateway_port: 8091
   graceful_wait: 5s # 平滑退出等待时间，单位s
 
