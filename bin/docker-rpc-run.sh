@@ -5,6 +5,11 @@ image_name=athena-project-rpc
 version=v1.0
 cd $root_dir
 
-docker rm -f athena-rpc
-docker run --name=athena-rpc -p 3337:3337 -p 8081:8081 -v $root_dir/config/app.yaml:/app/app.yaml -itd \
+container_name=athena-rpc
+container=$(docker ps -a | grep $container_name | awk '{print $1}')
+if [ ${#container} -gt 0 ]; then
+    docker rm -f $container_name
+fi
+
+docker run --name=$container_name -p 3337:3337 -p 8081:8081 -v $root_dir/config/app.yaml:/app/app.yaml -itd \
    athena-project-rpc:v1.0

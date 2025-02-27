@@ -9,7 +9,7 @@ app_conf:
 
 # redis配置
 redis_conf:
-  Address: 192.168.10.100:6379 # host:port address.
+  Address: 192.168.10.121:6379 # host:port address.
   Password:
   DB: 0
   DialTimeout: 5s # Dial timeout for establishing new connections.
@@ -23,7 +23,7 @@ redis_conf:
 
 # mysql配置
 db_conf:
-  Host: 192.168.10.100
+  Host: 192.168.10.121
   Port: 3306
   User: root
   Password: "root123456"

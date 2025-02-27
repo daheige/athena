@@ -26,3 +26,4 @@ go.work.sum
 cmd/job/athena-job
 logs/*
 *.log
+k8s-dev.md
