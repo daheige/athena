@@ -1,7 +1,7 @@
 app_conf:
   # 服务注册和发现配置
-  enable_discovery: true
+  enable_discovery: false
   discovery:
     target_type: etcd
     endpoints:
-      - "192.168.10.121:2379"
+      - "127.0.0.0:12379"

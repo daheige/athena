@@ -12,7 +12,7 @@ app_conf:
   discovery:
     target_type: etcd
     endpoints:
-      - "192.168.10.121:2379"
+      - "localhost:12379"
 
 # redis配置
 redis_conf:

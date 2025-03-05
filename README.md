@@ -71,7 +71,7 @@ docker run -d \
   /usr/local/bin/etcd \
   --name etcd_test \
   --data-dir /etcd-data \
-  --advertise-client-urls http://localhost:2379 \
+  --advertise-client-urls http://0.0.0.0:2379 \
   --listen-client-urls http://0.0.0.0:2379
 ```
 当etcd运行后，就可以修改app.yaml配置文件的服务发现和注册如下：
@@ -84,6 +84,26 @@ docker run -d \
       - "127.0.0.1:12379"
 ```
 随后就可以运行rpc应用程序
+
+# 查看etcd注册的服务列表
+服务启动后，执行如下命令进入etcd容器中
+```shell
+docker exec -it etcd_test /bin/bash
+```
+接着执行如下命令获取服务列表
+```shell
+etcdctl get /services/athena_grpc --prefix
+```
+运行效果如下：
+```
+etcdctl get /services/athena_grpc --prefix
+/services/athena_grpc/02bde795-ef8e-4594-bff8-a21dd07c97a7
+{
+"name":"athena_grpc","address":"localhost:8081",
+"instance_id":"02bde795-ef8e-4594-bff8-a21dd07c97a7",
+"version":"v1","created":"2025-03-05 21:54:18","metadata":null
+}
+```
 
 # rust语言的grpc微服务解决方案
 https://github.com/daheige/rs-rpc

@@ -4,6 +4,7 @@ package etcd
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -100,6 +101,9 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	}
 	if s.Created == "" {
 		s.Created = time.Now().Format("2006-01-02 15:04:05")
+	}
+	if s.Address == "" {
+		return errors.New("address invalid,please provide service address，eg: ip:port")
 	}
 
 	var ttlTime int64 = 10
