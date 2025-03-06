@@ -12,7 +12,7 @@ docker run -d \
   /usr/local/bin/etcd \
   --name etcd_test \
   --data-dir /etcd-data \
-  --advertise-client-urls http://localhost:2379 \
+  --advertise-client-urls http://0.0.0.0:2379 \
   --listen-client-urls http://0.0.0.0:2379
 ```
 

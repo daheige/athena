@@ -14,9 +14,10 @@ func TestNetAddr(t *testing.T) {
 	fmt.Println(n.Network() == "tcp")
 	fmt.Println(n.String() == ":8090")
 
-	fmt.Println(Resolve("tcp", "8090"))
-	fmt.Println(Resolve("tcp", ":8090"))
-	fmt.Println(Resolve("tcp", "localhost:8090"))
+	fmt.Println(Resolve("8090"))
+	fmt.Println(Resolve(":8090"))
+	fmt.Println(Resolve("localhost:8090"))
+	fmt.Println(Resolve(n.String()))
 
 	fmt.Println(LocalAddr()) // local ip
 }

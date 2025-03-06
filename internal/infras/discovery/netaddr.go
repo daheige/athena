@@ -1,10 +1,9 @@
 package discovery
 
 import (
-	"errors"
+	"fmt"
 	"net"
 	"strconv"
-	"strings"
 )
 
 var _ net.Addr = &NetAddr{}
@@ -30,56 +29,49 @@ func (na *NetAddr) String() string {
 	return na.address
 }
 
-// Resolve 解析address地址
-func Resolve(network, address string) (string, error) {
-	if network == "tcp" {
-		s := strings.Split(address, ":")
-		switch len(s) {
-		case 0:
-			return "", errors.New("address is empty")
-		case 1:
-			_, err := strconv.Atoi(s[0])
-			if err != nil {
-				return "", errors.New("invalid port")
-			}
-			address = net.JoinHostPort("0.0.0.0", s[0])
-		case 2:
-			if s[0] == "" {
-				s[0] = "0.0.0.0"
-			}
-
-			_, err := strconv.Atoi(s[1])
-			if err != nil {
-				return "", errors.New("invalid port")
-			}
-			address = net.JoinHostPort(s[0], s[1])
-		default:
-			return "", errors.New("invalid address")
-		}
-	}
-
-	// check address
-	addr, err := net.ResolveTCPAddr(network, address)
+// Resolve returns host:port address
+func Resolve(address string) (string, error) {
+	host, port, err := net.SplitHostPort(address)
 	if err != nil {
 		return "", err
 	}
 
-	return net.JoinHostPort(addr.IP.String(), strconv.Itoa(addr.Port)), nil
+	// if host is empty or "::", use local ipv4 address as host
+	if host == "" || host == "::" {
+		host, err = localIPv4Host()
+		if err != nil {
+			return "", fmt.Errorf("parse registry info addr error: %w", err)
+		}
+	}
+
+	p, err := strconv.Atoi(port)
+	if err != nil {
+		return "", fmt.Errorf("parse address port error: %w", err)
+	}
+
+	return fmt.Sprintf("%s:%d", host, p), nil
 }
 
-// LocalAddr 获取本地ip地址
+// LocalAddr returns local ipv4 ip
 func LocalAddr() (string, error) {
+	return localIPv4Host()
+}
+
+func localIPv4Host() (string, error) {
 	s, err := net.InterfaceAddrs()
 	if err != nil {
 		return "", err
 	}
 
 	for _, addr := range s {
-		ipNet, ok := addr.(*net.IPNet)
-		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil {
-			return ipNet.IP.String(), nil
+		ipNet, isIpNet := addr.(*net.IPNet)
+		if isIpNet && !ipNet.IP.IsLoopback() {
+			ipv4 := ipNet.IP.To4()
+			if ipv4 != nil {
+				return ipv4.String(), nil
+			}
 		}
 	}
 
-	return "", errors.New("no local address")
+	return "", fmt.Errorf("not found ipv4 address")
 }

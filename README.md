@@ -92,12 +92,12 @@ docker exec -it etcd_test /bin/bash
 ```
 接着执行如下命令获取服务列表
 ```shell
-etcdctl get /services/athena_grpc --prefix
+etcdctl get athena/registry-etcd/athena_grpc --prefix
 ```
 运行效果如下：
 ```
-etcdctl get /services/athena_grpc --prefix
-/services/athena_grpc/02bde795-ef8e-4594-bff8-a21dd07c97a7
+etcdctl get athena/registry-etcd/athena_grpc --prefix
+athena/registry-etcd/athena_grpc/02bde795-ef8e-4594-bff8-a21dd07c97a7
 {
 "name":"athena_grpc","address":"localhost:8081",
 "instance_id":"02bde795-ef8e-4594-bff8-a21dd07c97a7",

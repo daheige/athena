@@ -22,8 +22,9 @@ type etcdImpl struct {
 	dialTimeout time.Duration // 默认5s
 	client      *clientv3.Client
 
-	meta   *registerMeta
-	prefix string // 默认为/services
+	meta              *registerMeta
+	prefix            string // 默认为/services
+	keepaliveInterval time.Duration
 
 	// etcd 用户名和密码可选
 	username string
@@ -67,12 +68,20 @@ func WithPrefix(prefix string) Option {
 	}
 }
 
+// WithKeepaliveInterval 设置keepalive时间间隔
+func WithKeepaliveInterval(interval time.Duration) Option {
+	return func(impl *etcdImpl) {
+		impl.keepaliveInterval = interval
+	}
+}
+
 // New 创建一个服务注册和发现的实例
 func New(endpoints []string, opts ...Option) (discovery.Registry, error) {
 	impl := &etcdImpl{
-		endpoints:   endpoints,
-		dialTimeout: 5 * time.Second,
-		prefix:      "/services",
+		endpoints:         endpoints,
+		dialTimeout:       5 * time.Second,
+		prefix:            "athena/registry-etcd",
+		keepaliveInterval: 10 * time.Second,
 	}
 
 	for _, opt := range opts {
@@ -106,7 +115,7 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 		return errors.New("address invalid,please provide service address，eg: ip:port")
 	}
 
-	var ttlTime int64 = 10
+	var ttlTime int64 = 20
 	if len(ttl) > 0 && ttl[0] > 0 {
 		ttlTime = int64(ttl[0].Seconds())
 	}
@@ -138,6 +147,27 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	}
 
 	e.meta = meta
+
+	go func() {
+		ticker := time.NewTicker(e.keepaliveInterval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				err2 := e.keepalive(meta)
+				if err2 != nil {
+					log.Printf("keep alive failed: %v", err2)
+				} else {
+					log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
+				}
+			case <-meta.ctx.Done():
+				return
+			default:
+			}
+		}
+	}()
+
 	log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
 	return nil
 }

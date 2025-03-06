@@ -76,16 +76,8 @@ func main() {
 		}
 		serviceName := "athena_grpc"
 		instanceID := uuid.New().String()
-		address := fmt.Sprintf("%s:%d", "localhost", conf.GrpcPort)
-		//address := fmt.Sprintf("%s:%d", "0.0.0.0", conf.GrpcPort)
-		//ip,err := discovery.LocalAddr()
-		//if err != nil {
-		//	log.Fatal(err)
-		//}
-		//address := fmt.Sprintf("%s:%d", ip, conf.GrpcPort)
-		//addr := discovery.NewNetAddr("tcp", address)
-		//address, err = discovery.Resolve("tcp",addr.String())
-		address, err = discovery.Resolve("tcp", address)
+		addr := discovery.NewNetAddr("tcp", fmt.Sprintf(":%d", conf.GrpcPort))
+		address, err := discovery.Resolve(addr.String())
 		if err != nil {
 			log.Fatal("init service address error: ", err)
 		}
