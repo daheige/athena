@@ -33,8 +33,7 @@ type etcdImpl struct {
 
 type registerMeta struct {
 	leaseID clientv3.LeaseID
-	ctx     context.Context
-	cancel  context.CancelFunc
+	stop    chan struct{}
 }
 
 // Option etcdImpl functional option
@@ -137,17 +136,16 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 		return err
 	}
 
-	meta := &registerMeta{
+	e.meta = &registerMeta{
 		leaseID: leaseID,
+		stop:    make(chan struct{}, 1),
 	}
-	meta.ctx, meta.cancel = context.WithCancel(context.Background())
-	err = e.keepalive(meta)
+	err = e.keepalive(e.meta)
 	if err != nil {
 		return err
 	}
 
-	e.meta = meta
-
+	log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
 	go func() {
 		ticker := time.NewTicker(e.keepaliveInterval)
 		defer ticker.Stop()
@@ -155,35 +153,43 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 		for {
 			select {
 			case <-ticker.C:
-				err2 := e.keepalive(meta)
+				err2 := e.keepalive(e.meta)
 				if err2 != nil {
-					log.Printf("keep alive failed: %v", err2)
+					log.Printf(
+						"keep alive service:%v leaseID:%v instaceID:%v failed,error: %v\n",
+						s.Name, leaseID, s.InstanceID, err2,
+					)
 				} else {
-					log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
+					log.Printf(
+						"keep alive service:%v leaseID:%v instaceID:%v success\n",
+						s.Name, leaseID, s.InstanceID,
+					)
 				}
-			case <-meta.ctx.Done():
+			case <-e.meta.stop:
+				log.Printf(
+					"service:%v leaseID:%v instaceID:%v has been deregistered\n",
+					s.Name, leaseID, s.InstanceID,
+				)
 				return
 			default:
 			}
 		}
 	}()
 
-	log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
 	return nil
 }
 
 func (e *etcdImpl) keepalive(meta *registerMeta) error {
-	keepAlive, err := e.client.KeepAlive(meta.ctx, meta.leaseID)
+	keepAlive, err := e.client.KeepAlive(context.Background(), meta.leaseID)
 	if err != nil {
 		return err
 	}
 
 	go func() {
 		// eat keepAlive channel to keep related lease alive.
-		log.Printf("start keepalive lease %v for etcd registry\n", meta.leaseID)
 		for range keepAlive {
 			select {
-			case <-meta.ctx.Done():
+			case <-meta.stop:
 				log.Printf("stop keepalive lease %v for etcd registry\n", meta.leaseID)
 				return
 			default:
@@ -216,7 +222,7 @@ func (e *etcdImpl) Deregister(name string, instanceID string) error {
 
 	log.Printf("deregister service:%v instaceID:%v success\n", name, instanceID)
 	if e.meta != nil {
-		e.meta.cancel()
+		close(e.meta.stop)
 	}
 
 	return nil

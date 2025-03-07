@@ -12,7 +12,7 @@ import (
 
 func TestRegister(t *testing.T) {
 	r, err := New([]string{
-		"192.168.10.121:2379",
+		"127.0.0.1:12379",
 	})
 	if err != nil {
 		log.Fatal("failed to init registry,error: ", err)
@@ -39,7 +39,7 @@ func TestRegister(t *testing.T) {
 // 获取服务列表
 func TestEtcdServices(t *testing.T) {
 	r, err := New([]string{
-		"192.168.10.121:2379",
+		"127.0.0.1:12379",
 	})
 	if err != nil {
 		log.Fatal(err)
