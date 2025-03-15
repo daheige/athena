@@ -1,4 +1,4 @@
-FROM athena-project-dev:v1.0 as builder
+FROM athena-project-dev:v1.0 AS builder
 
 LABEL authors="heige"
 
