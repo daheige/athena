@@ -12,4 +12,4 @@ if [ ${#container} -gt 0 ]; then
 fi
 
 docker run --name=$container_name -v $root_dir/config/app.yaml:/app/app.yaml -itd \
-   athena-project-job:v1.0
+   $image_name:$version

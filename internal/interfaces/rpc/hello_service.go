@@ -1,4 +1,4 @@
-// Package application for grpc service and business logic.
+// Package rpc for grpc service method impl.
 package rpc
 
 import (

@@ -12,4 +12,4 @@ if [ ${#container} -gt 0 ]; then
 fi
 
 docker run --name=$container_name -p 3337:3337 -p 8081:8081 -v $root_dir/config/app.yaml:/app/app.yaml -itd \
-   athena-project-rpc:v1.0
+   $image_name:$version
