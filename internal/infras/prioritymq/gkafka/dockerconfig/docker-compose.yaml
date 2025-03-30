@@ -1,0 +1,28 @@
+# kafka in docker
+version: '3'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    restart: always
+    container_name: my-kafka-zk
+    ports:
+      - 2181:2181
+  kafka:
+    image: wurstmeister/kafka
+    restart: always
+    container_name: my-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      # KAFKA_CREATE_TOPICS: "my-topic"
+      # 这里需要修改为自己本机IP地址
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.10:9092
+      # broker id
+      KAFKA_BROKER_ID: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
