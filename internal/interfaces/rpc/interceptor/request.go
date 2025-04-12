@@ -47,7 +47,7 @@ func AccessLog(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 	ctx = context.WithValue(ctx, logger.XRequestID, requestId)
 	ctx = context.WithValue(ctx, logger.ReqClientIP, clientIP)
 	ctx = context.WithValue(ctx, logger.RequestMethod, info.FullMethod)
-	ctx = context.WithValue(ctx, logger.RequestURI, info.FullMethod)
+	// ctx = context.WithValue(ctx, logger.RequestURI, info.FullMethod)
 	ctx = context.WithValue(ctx, logger.UserAgent, "grpc-client")
 	logger.Info(ctx, "exec begin", map[string]interface{}{
 		"client_ip": clientIP,
