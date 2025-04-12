@@ -4,10 +4,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Option option for zapLogWriter
+// Option zapLogWriter option
 type Option func(z *zapLogWriter)
 
-// apply add option for zapLogWriter
+// apply option for zapLogWriter
 func (z *zapLogWriter) apply(opts ...Option) {
 	for _, o := range opts {
 		o(z)
@@ -43,7 +43,7 @@ func WithAddCaller(b bool) Option {
 }
 
 /*
-* WithCallerSkip 设置callerSkip
+WithCallerSkip 设置callerSkip
 addCaller = true,并且 callerSkip > 0 会设置zap.AddCallerSkip
 zap源码包中logger.go#260 check func
 check must always be called directly by a method in the Logger interface
