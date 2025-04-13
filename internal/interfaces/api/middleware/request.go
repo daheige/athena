@@ -33,7 +33,7 @@ func TimeoutHandler(timeout time.Duration) func(c *gin.Context) {
 			// check if context timeout was reached
 			if ctx.Err() == context.DeadlineExceeded {
 				// 记录操作日志
-				logger.Error(c, "server timeout")
+				logger.Error(ctx, "server timeout")
 
 				// write response and abort the request
 				if !c.IsAborted() {
