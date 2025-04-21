@@ -6,8 +6,8 @@
 docker run -d \
   --name etcd_test \
   --restart=always \
-  -p 2379:2379 \
-  -p 2380:2380 \
+  -p 12379:2379 \
+  -p 12380:2380 \
   quay.io/coreos/etcd:v3.5.1 \
   /usr/local/bin/etcd \
   --name etcd_test \

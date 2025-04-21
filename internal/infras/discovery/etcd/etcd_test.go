@@ -56,5 +56,5 @@ func TestEtcdServices(t *testing.T) {
 
 	// 剔除某个服务，一般来说，在应用程序退出之前，需要将其剔除该服务
 	// 可以在etcd上吗执行 etcdctl get athena/registry-etcd/athena_grpc --prefix 查看是否剔除服务
-	//r.Deregister("athena_grpc", "62050eb8-feb8-41fd-81b4-0f9cb7fa99c6")
+	// r.Deregister("athena_grpc", "62050eb8-feb8-41fd-81b4-0f9cb7fa99c6")
 }

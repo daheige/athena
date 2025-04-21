@@ -22,9 +22,9 @@ type etcdImpl struct {
 	dialTimeout time.Duration // 默认5s
 	client      *clientv3.Client
 
-	meta              *registerMeta
-	prefix            string // 默认为/services
-	keepaliveInterval time.Duration
+	meta   *registerMeta
+	prefix string // 默认为/services
+	stop   chan struct{}
 
 	// etcd 用户名和密码可选
 	username string
@@ -33,7 +33,6 @@ type etcdImpl struct {
 
 type registerMeta struct {
 	leaseID clientv3.LeaseID
-	stop    chan struct{}
 }
 
 // Option etcdImpl functional option
@@ -67,20 +66,13 @@ func WithPrefix(prefix string) Option {
 	}
 }
 
-// WithKeepaliveInterval 设置keepalive时间间隔
-func WithKeepaliveInterval(interval time.Duration) Option {
-	return func(impl *etcdImpl) {
-		impl.keepaliveInterval = interval
-	}
-}
-
 // New 创建一个服务注册和发现的实例
 func New(endpoints []string, opts ...Option) (discovery.Registry, error) {
 	impl := &etcdImpl{
-		endpoints:         endpoints,
-		dialTimeout:       5 * time.Second,
-		prefix:            "athena/registry-etcd",
-		keepaliveInterval: 10 * time.Second,
+		endpoints:   endpoints,
+		dialTimeout: 5 * time.Second,
+		prefix:      "athena/registry-etcd",
+		stop:        make(chan struct{}, 1),
 	}
 
 	for _, opt := range opts {
@@ -138,7 +130,6 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 
 	e.meta = &registerMeta{
 		leaseID: leaseID,
-		stop:    make(chan struct{}, 1),
 	}
 	err = e.keepalive(e.meta)
 	if err != nil {
@@ -146,35 +137,6 @@ func (e *etcdImpl) Register(s discovery.Service, ttl ...time.Duration) error {
 	}
 
 	log.Printf("register service:%v leaseID:%v instaceID:%v success\n", s.Name, leaseID, s.InstanceID)
-	go func() {
-		ticker := time.NewTicker(e.keepaliveInterval)
-		defer ticker.Stop()
-
-		for {
-			select {
-			case <-ticker.C:
-				err2 := e.keepalive(e.meta)
-				if err2 != nil {
-					log.Printf(
-						"keep alive service:%v leaseID:%v instaceID:%v failed,error: %v\n",
-						s.Name, leaseID, s.InstanceID, err2,
-					)
-				} else {
-					log.Printf(
-						"keep alive service:%v leaseID:%v instaceID:%v success\n",
-						s.Name, leaseID, s.InstanceID,
-					)
-				}
-			case <-e.meta.stop:
-				log.Printf(
-					"service:%v leaseID:%v instaceID:%v has been deregistered\n",
-					s.Name, leaseID, s.InstanceID,
-				)
-				return
-			default:
-			}
-		}
-	}()
 
 	return nil
 }
@@ -189,7 +151,7 @@ func (e *etcdImpl) keepalive(meta *registerMeta) error {
 		// eat keepAlive channel to keep related lease alive.
 		for range keepAlive {
 			select {
-			case <-meta.stop:
+			case <-e.stop:
 				log.Printf("stop keepalive lease %v for etcd registry\n", meta.leaseID)
 				return
 			default:
@@ -220,11 +182,8 @@ func (e *etcdImpl) Deregister(name string, instanceID string) error {
 		return err
 	}
 
+	close(e.stop)
 	log.Printf("deregister service:%v instaceID:%v success\n", name, instanceID)
-	if e.meta != nil {
-		close(e.meta.stop)
-	}
-
 	return nil
 }
 
